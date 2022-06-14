@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Slither.oi
 {
@@ -17,6 +18,8 @@ namespace Slither.oi
         List<Rectangle> dots = new List<Rectangle>();
         List<String> dotsColour = new List<String>();
 
+        Rectangle time = new Rectangle(0, 0, 0, 5);
+
         bool leftDown = false;
         bool rightDown = false;
         bool aDown = false;
@@ -26,10 +29,6 @@ namespace Slither.oi
 
         int dotsc;
         int dotsCounter;
-        int x1 = 1;
-        int y1 = 1;
-        int x2 = 1;
-        int y2 = 1;
         int p1score = 0;
         int p2score = 0;
         int angle1 = 0;
@@ -37,16 +36,16 @@ namespace Slither.oi
         int xspeed = 3;
         int yspeed = -3;
 
+        double timer = 1000;
+
         float p1xSpeed;
         float p1ySpeed;
         float p2xSpeed;
         float p2ySpeed;
         float temp;
-        float temp2;
-        float temp3;
-        float temp4;
-        
         float thetaAngle;
+
+        string gamestate = "waiting";
 
         SolidBrush yellowBrush = new SolidBrush(Color.Goldenrod);
         SolidBrush blueBrush = new SolidBrush(Color.Blue);
@@ -66,6 +65,34 @@ namespace Slither.oi
         public Form1()
         {
             InitializeComponent();
+
+            
+        }
+
+        public void GameInitialize()
+        {
+            gamestate = "running";
+
+            gametimer.Enabled = true;
+
+            titlelabel.Visible = false;
+            titlelabel.Visible = false;
+            subtitlelabel.Visible = false;
+
+            p1scorelabel.Visible = true;
+            p2scorelabel.Visible = true;
+
+            links1.Clear();
+            links2.Clear();
+            dots.Clear();
+            dotsColour.Clear();
+
+            p1score = 0;
+            p2score = 0;
+            timer = 1000;
+            dotsCounter = 0;
+            angle1 = 0;
+            angle2 = 0;
 
             links2.Add(new Rectangle(180, 580, 30, 30));
             links1.Add(new Rectangle(780, 580, 30, 30));
@@ -108,6 +135,7 @@ namespace Slither.oi
                 }
             }
         }
+
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -148,6 +176,12 @@ namespace Slither.oi
 
         private void gametimer_Tick(object sender, EventArgs e)
         {
+            //count down timer
+            timer -= 0.25;
+            time.Width = (int)timer;
+            if (timer == 0)
+
+            
             //move links
             if (links1.Count > 1)
             {
@@ -353,18 +387,18 @@ namespace Slither.oi
 
             //calculate score
             p1score = 0;
-            if (links1.Count > 0)
+            if (links1.Count > 1)
             {
-                p1score = links1.Count / 2 - 1;
+                p1score = (links1.Count - 1) / 2;
             }
-            p1scorelabel.Text = $"{p1score}";
+            p2scorelabel.Text = $"{p1score}";
 
             p2score = 0;
             if (links2.Count > 0)
             {
-                p2score = links2.Count / 2 - 1;
+                p2score = (links2.Count - 1) / 2;
             }
-            p2scorelabel.Text = $"{p2score}";
+            p1scorelabel.Text = $"{p2score}";
 
             //add dots
             dotsCounter++;
@@ -417,6 +451,9 @@ namespace Slither.oi
             debugLabel.Text += $"thetaAngle: {thetaAngle}\n";
             debugLabel.Text += $"p1xSpeed: {p1xSpeed}\n";
             debugLabel.Text += $"p1ySpeed: {p1ySpeed}\n";
+
+            e.Graphics.FillRectangle(whiteBrush, time);
+
             for (int i = 0; i < links1.Count; i++)
             {
                 e.Graphics.TranslateTransform(links1[i].X, links1[i].Y);
@@ -428,9 +465,10 @@ namespace Slither.oi
 
             for (int i = 0; i < links2.Count; i++)
             {
+                e.Graphics.TranslateTransform(links2[i].X, links2[i].Y);
                 e.Graphics.RotateTransform(angle2);
-                e.Graphics.DrawRectangle(bluePen, links2[i]);
-                e.Graphics.FillEllipse(blueBrush, links2[i]);
+                e.Graphics.DrawRectangle(bluePen, 0, 0, links2[i].Width, links2[i].Height);
+                e.Graphics.FillEllipse(blueBrush, 0, 0, links2[i].Width, links2[i].Height);
                 e.Graphics.ResetTransform();
             }
 
