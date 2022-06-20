@@ -52,7 +52,6 @@ namespace Slither.oi
         double p2xSpeed;
         double p2ySpeed;
 
-        float temp;
         float thetaAngle1;
         float thetaAngle2;
         float p1x = 780;
@@ -222,11 +221,11 @@ namespace Slither.oi
             //count down timer
             if (gamestate == "running")
             {
-                timer -= 0.25;
+                timer -=  0.25;
                 time.Width = (int)timer;
                 if (timer == 0)
                 {
-                    gamestate = "over";
+                    gamestate = "waiting";
                 }
             }
 
@@ -557,6 +556,9 @@ namespace Slither.oi
             {
                 p1dead = false;
                 deathCounter1 = 0;
+                angle1 = 0;
+                p1x = 780;
+                p1y = 580;
                 links1.Add(new Rectangle(780, 580, 30, 30));
             }
 
@@ -569,6 +571,9 @@ namespace Slither.oi
             {
                 p2dead = false;
                 deathCounter2 = 0;
+                angle2 = 0;
+                p2x = 180;
+                p2y = 580;
                 links2.Add(new Rectangle(180, 580, 30, 30));
             }
 
@@ -631,25 +636,39 @@ namespace Slither.oi
                 }
             }
 
+            if (gamestate == "waiting")
+            {
+                titlelabel.Visible = true;
+                titlelabel.Visible = true;
+                subtitlelabel.Visible = true;
+                subtitle2label.Visible = true;
+                control1label.Visible = true;
+                control2label.Visible = true;
+
+                p1scorelabel.Visible = false;
+                p2scorelabel.Visible = false;
+
+                links1.Clear();
+                links2.Clear();
+                dots.Clear();
+                dotsColour.Clear();
+
+                gametimer.Enabled = false;
+            }
+
             Refresh();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            if (gamestate == "running")
+            { 
             for (int i = 0; i < links1.Count; i++)
             {
                 e.Graphics.TranslateTransform(links1[i].X, links1[i].Y);
                 e.Graphics.RotateTransform(angle1);
-                if (i == 0)
-                {
-                    e.Graphics.DrawRectangle(yellowPen, 0, 0, links1[i].Width, links1[i].Height);
-                    e.Graphics.FillEllipse(redBrush, 0, 0, links1[i].Width, links1[i].Height);
-                }
-                else
-                {
-                    e.Graphics.DrawRectangle(yellowPen, 0, 0, links1[i].Width, links1[i].Height);
-                    e.Graphics.FillEllipse(yellowBrush, 0, 0, links1[i].Width, links1[i].Height);
-                }
+                e.Graphics.DrawRectangle(yellowPen, 0, 0, links1[i].Width, links1[i].Height);
+                e.Graphics.FillEllipse(yellowBrush, 0, 0, links1[i].Width, links1[i].Height);
                 e.Graphics.ResetTransform();
             }
 
@@ -657,52 +676,47 @@ namespace Slither.oi
             {
                 e.Graphics.TranslateTransform(links2[i].X, links2[i].Y);
                 e.Graphics.RotateTransform(angle2);
-                if (i == 0)
-                {
-                    e.Graphics.DrawRectangle(bluePen, 0, 0, links2[i].Width, links2[i].Height);
-                    e.Graphics.FillEllipse(greenBrush, 0, 0, links2[i].Width, links2[i].Height);
-                }
-                else
-                {
-                    e.Graphics.DrawRectangle(bluePen, 0, 0, links2[i].Width, links2[i].Height);
-                    e.Graphics.FillEllipse(blueBrush, 0, 0, links2[i].Width, links2[i].Height);
-                }
+                e.Graphics.DrawRectangle(bluePen, 0, 0, links2[i].Width, links2[i].Height);
+                e.Graphics.FillEllipse(blueBrush, 0, 0, links2[i].Width, links2[i].Height);
                 e.Graphics.ResetTransform();
             }
 
-            for (int i = 0; i < dots.Count; i++)
-            {
-                if (dotsColour[i] == "yellow")
+            e.Graphics.FillRectangle(whiteBrush, time);
+
+                for (int i = 0; i < dots.Count; i++)
                 {
-                    e.Graphics.FillEllipse(yellowBrush, dots[i]);
-                }
-                else if (dotsColour[i] == "white")
-                {
-                    e.Graphics.FillEllipse(whiteBrush, dots[i]);
-                }
-                else if (dotsColour[i] == "blue")
-                {
-                    e.Graphics.FillEllipse(blueBrush, dots[i]);
-                }
-                else if (dotsColour[i] == "green")
-                {
-                    e.Graphics.FillEllipse(greenBrush, dots[i]);
-                }
-                else if (dotsColour[i] == "red")
-                {
-                    e.Graphics.FillEllipse(redBrush, dots[i]);
-                }
-                else if (dotsColour[i] == "orange")
-                {
-                    e.Graphics.FillEllipse(orangeBrush, dots[i]);
-                }
-                else if (dotsColour[i] == "purple")
-                {
-                    e.Graphics.FillEllipse(purpleBrush, dots[i]);
-                }
-                else if (dotsColour[i] == "turquoise")
-                {
-                    e.Graphics.FillEllipse(turquoiseBrush, dots[i]);
+                    if (dotsColour[i] == "yellow")
+                    {
+                        e.Graphics.FillEllipse(yellowBrush, dots[i]);
+                    }
+                    else if (dotsColour[i] == "white")
+                    {
+                        e.Graphics.FillEllipse(whiteBrush, dots[i]);
+                    }
+                    else if (dotsColour[i] == "blue")
+                    {
+                        e.Graphics.FillEllipse(blueBrush, dots[i]);
+                    }
+                    else if (dotsColour[i] == "green")
+                    {
+                        e.Graphics.FillEllipse(greenBrush, dots[i]);
+                    }
+                    else if (dotsColour[i] == "red")
+                    {
+                        e.Graphics.FillEllipse(redBrush, dots[i]);
+                    }
+                    else if (dotsColour[i] == "orange")
+                    {
+                        e.Graphics.FillEllipse(orangeBrush, dots[i]);
+                    }
+                    else if (dotsColour[i] == "purple")
+                    {
+                        e.Graphics.FillEllipse(purpleBrush, dots[i]);
+                    }
+                    else if (dotsColour[i] == "turquoise")
+                    {
+                        e.Graphics.FillEllipse(turquoiseBrush, dots[i]);
+                    }
                 }
             }
         }

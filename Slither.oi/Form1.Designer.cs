@@ -47,18 +47,20 @@
             // 
             // p2scorelabel
             // 
+            this.p2scorelabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.p2scorelabel.ForeColor = System.Drawing.Color.White;
             this.p2scorelabel.Location = new System.Drawing.Point(12, 9);
             this.p2scorelabel.Name = "p2scorelabel";
-            this.p2scorelabel.Size = new System.Drawing.Size(25, 13);
+            this.p2scorelabel.Size = new System.Drawing.Size(94, 48);
             this.p2scorelabel.TabIndex = 1;
             // 
             // p1scorelabel
             // 
+            this.p1scorelabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.p1scorelabel.ForeColor = System.Drawing.Color.White;
-            this.p1scorelabel.Location = new System.Drawing.Point(953, 9);
+            this.p1scorelabel.Location = new System.Drawing.Point(930, 9);
             this.p1scorelabel.Name = "p1scorelabel";
-            this.p1scorelabel.Size = new System.Drawing.Size(35, 13);
+            this.p1scorelabel.Size = new System.Drawing.Size(76, 48);
             this.p1scorelabel.TabIndex = 2;
             // 
             // titlelabel
