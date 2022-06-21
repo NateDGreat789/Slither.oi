@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
 using System.IO;
 
 namespace Slither.oi
@@ -43,8 +44,12 @@ namespace Slither.oi
         int deathCounter2;
         int player1Size = 25;
         int player2Size = 25;
+        int p1SUpC = 0;
+        int p2SUpC = 0;
         int p1speedCounter = 0;
         int p2speedCounter = 0;
+        int p1dc = 0;
+        int p2dc = 0;
 
         double timer = 1000;
         double p1xSpeed;
@@ -62,7 +67,7 @@ namespace Slither.oi
         string gamestate = "waiting";
 
         SolidBrush yellowBrush = new SolidBrush(Color.Goldenrod);
-        SolidBrush blueBrush = new SolidBrush(Color.Blue);
+        SolidBrush blueBrush = new SolidBrush(Color.RoyalBlue);
         SolidBrush whiteBrush = new SolidBrush(Color.White);
         SolidBrush redBrush = new SolidBrush(Color.Red);
         SolidBrush orangeBrush = new SolidBrush(Color.Orange);
@@ -71,8 +76,11 @@ namespace Slither.oi
         SolidBrush turquoiseBrush = new SolidBrush(Color.Turquoise);
 
         Pen yellowPen = new Pen(Color.DarkGoldenrod, 2);
-        Pen bluePen = new Pen(Color.DarkBlue, 2);
+        Pen bluePen = new Pen(Color.Blue, 2);
 
+        SoundPlayer eat = new SoundPlayer(Properties.Resources.eat);
+        SoundPlayer boom = new SoundPlayer(Properties.Resources.boom);
+        SoundPlayer win = new SoundPlayer(Properties.Resources.win);
 
         Random rnd = new Random();
 
@@ -87,7 +95,6 @@ namespace Slither.oi
 
             gametimer.Enabled = true;
 
-            titlelabel.Visible = false;
             titlelabel.Visible = false;
             subtitlelabel.Visible = false;
             subtitle2label.Visible = false;
@@ -202,13 +209,13 @@ namespace Slither.oi
                     wDown = true;
                     break;
                 case Keys.Space:
-                    if (gamestate == "waiting")
+                    if (gamestate == "waiting" || gamestate == "over")
                     {
                         GameInitialize();
                     }
                     break;
                 case Keys.Escape:
-                    if (gamestate == "waiting")
+                    if (gamestate == "waiting" || gamestate == "over")
                     {
                         Application.Exit();
                     }
@@ -221,11 +228,11 @@ namespace Slither.oi
             //count down timer
             if (gamestate == "running")
             {
-                timer -=  0.25;
+                timer -=  0.5;
                 time.Width = (int)timer;
                 if (timer == 0)
                 {
-                    gamestate = "waiting";
+                    gamestate = "over";
                 }
             }
 
@@ -375,7 +382,14 @@ namespace Slither.oi
                 {
                     if (links1[0].IntersectsWith(dots[i]))
                     {
+                        eat.Play();
                         p1score++;
+                        p1SUpC++;
+                        if (p1SUpC == 10)
+                        {
+                            player1Size += 5;
+                            p1SUpC = 0;
+                        }
                         for (int j = 0; j < 5; j++)
                         {
                             links1.Add(new Rectangle(links1[0].X, links1[0].Y, player1Size, player1Size));
@@ -389,7 +403,14 @@ namespace Slither.oi
                 {
                     if (links2[0].IntersectsWith(dots[i]))
                     {
+                        eat.Play();
                         p2score++;
+                        p2SUpC++;
+                        if (p2SUpC == 10)
+                        {
+                            player2Size += 5;
+                            p1SUpC = 0;
+                        }
                         for (int j = 0; j < 5; j++)
                         {
                             links2.Add(new Rectangle(links2[0].X, links2[0].Y, player2Size, player2Size));
@@ -449,48 +470,22 @@ namespace Slither.oi
                 {
                     if (links1[0].IntersectsWith(links2[i]))
                     {
+                        boom.Play();
+                        p1dc++;
                         moveable1 = false;
+                        for (int j = 0; j < links1.Count; j++)
+                        {
+                            links2.Add(new Rectangle(links2[0].X, links2[0].Y, player2Size, player2Size));
+                            p2SUpC++;
+                            if (p2SUpC == 10)
+                            {
+                                player2Size += 5;
+                                p2SUpC = 0;
+                            }
+                        }
                         links1.Clear();
                         p1score = 0;
                         p1dead = true;
-                        for (int j = 0; j < links1.Count; j += 2)
-                        {
-                            dots.Add(new Rectangle(rnd.Next(links1[j].X, links1[j].X + links1[j].Width), rnd.Next(links1[j].Y, links1[j].Y + links1[j].Height), 7, 7));
-                            dotsc = rnd.Next(0, 8);
-                            if (dotsc == 0)
-                            {
-                                dotsColour.Add("yellow");
-                            }
-                            else if (dotsc == 1)
-                            {
-                                dotsColour.Add("white");
-                            }
-                            else if (dotsc == 2)
-                            {
-                                dotsColour.Add("blue");
-                            }
-                            else if (dotsc == 3)
-                            {
-                                dotsColour.Add("green");
-                            }
-                            else if (dotsc == 4)
-                            {
-                                dotsColour.Add("red");
-                            }
-                            else if (dotsc == 5)
-                            {
-                                dotsColour.Add("orange");
-                            }
-                            else if (dotsc == 6)
-                            {
-                                dotsColour.Add("purple");
-                            }
-                            else if (dotsc == 7)
-                            {
-                                dotsColour.Add("turquoise");
-                            }
-                            links1.RemoveAt(0);
-                        }
                     }
                 }
             }
@@ -501,47 +496,28 @@ namespace Slither.oi
                 {
                     if (links2[0].IntersectsWith(links1[i]))
                     {
+                        boom.Play();
+                        p2dc++;
                         moveable2 = false;
+                        p1SUpC++;
+                        if (p1SUpC == 10)
+                        {
+                            player1Size += 5;
+                            p1SUpC = 0;
+                        }
+                        for (int j = 0; j < links2.Count; j++)
+                        {
+                            links1.Add(new Rectangle(links1[0].X, links1[0].Y, player1Size, player1Size));
+                            p1SUpC++;
+                            if (p1SUpC == 10)
+                            {
+                                player1Size += 5;
+                                p1SUpC = 0;
+                            }
+                        }
                         links2.Clear();
                         p2score = 0;
                         p2dead = true;
-                        for (int j = 0; j < links2.Count; j += 2)
-                        {
-                            dots.Add(new Rectangle(rnd.Next(links2[j].X, links2[j].X + links2[j].Width), rnd.Next(links2[j].Y, links2[j].Y + links2[j].Height), 7, 7));
-                            dotsc = rnd.Next(0, 8);
-                            if (dotsc == 0)
-                            {
-                                dotsColour.Add("yellow");
-                            }
-                            else if (dotsc == 1)
-                            {
-                                dotsColour.Add("white");
-                            }
-                            else if (dotsc == 2)
-                            {
-                                dotsColour.Add("blue");
-                            }
-                            else if (dotsc == 3)
-                            {
-                                dotsColour.Add("green");
-                            }
-                            else if (dotsc == 4)
-                            {
-                                dotsColour.Add("red");
-                            }
-                            else if (dotsc == 5)
-                            {
-                                dotsColour.Add("orange");
-                            }
-                            else if (dotsc == 6)
-                            {
-                                dotsColour.Add("purple");
-                            }
-                            else if (dotsc == 7)
-                            {
-                                dotsColour.Add("turquoise");
-                            }
-                        }
                     }
                 }
             }
@@ -555,11 +531,16 @@ namespace Slither.oi
             if (deathCounter1 == 100)
             {
                 p1dead = false;
+                p1SUpC = 0;
+                player1Size = 25;
                 deathCounter1 = 0;
                 angle1 = 0;
                 p1x = 780;
                 p1y = 580;
-                links1.Add(new Rectangle(780, 580, 30, 30));
+                for (int i = 0; i < 10; i++)
+                {
+                    links1.Add(new Rectangle(780, 580, player1Size, player1Size));
+                }
             }
 
             if (p2dead == true)
@@ -570,11 +551,16 @@ namespace Slither.oi
             if (deathCounter2 == 100)
             {
                 p2dead = false;
+                p2SUpC = 0;
+                player2Size = 25;
                 deathCounter2 = 0;
                 angle2 = 0;
                 p2x = 180;
                 p2y = 580;
-                links2.Add(new Rectangle(180, 580, 30, 30));
+                for (int i = 0; i < 10; i++)
+                {
+                    links2.Add(new Rectangle(780, 580, player2Size, player2Size));
+                }
             }
 
             //calculate score
@@ -636,12 +622,28 @@ namespace Slither.oi
                 }
             }
 
-            if (gamestate == "waiting")
+            if (gamestate == "over")
             {
-                titlelabel.Visible = true;
+                win.Play();
+                if (p1score > p2score)
+                {
+                    titlelabel.Text = "PLAYER 1 WINS!";
+                }
+                else if (p2score > p1score)
+                {
+                    titlelabel.Text = "PLAYER 2 WINS!";
+                }
+                else
+                {
+                    titlelabel.Text = "TIE!";
+                }
+
                 titlelabel.Visible = true;
                 subtitlelabel.Visible = true;
                 subtitle2label.Visible = true;
+
+                control1label.Text = $"Player 1 score: {p1score}\nKills: {p2dc}";
+                control2label.Text = $"Player 2 score: {p2score}\nKills: {p1dc}";
                 control1label.Visible = true;
                 control2label.Visible = true;
 
@@ -661,62 +663,55 @@ namespace Slither.oi
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            if (gamestate == "running")
-            { 
+            p1scorelabel.Text = $"{dots.Count}";
+
             for (int i = 0; i < links1.Count; i++)
             {
-                e.Graphics.TranslateTransform(links1[i].X, links1[i].Y);
-                e.Graphics.RotateTransform(angle1);
-                e.Graphics.DrawRectangle(yellowPen, 0, 0, links1[i].Width, links1[i].Height);
-                e.Graphics.FillEllipse(yellowBrush, 0, 0, links1[i].Width, links1[i].Height);
-                e.Graphics.ResetTransform();
+                e.Graphics.DrawEllipse(yellowPen, links1[i].X, links1[i].Y, links1[i].Width, links1[i].Height);
+                e.Graphics.FillEllipse(yellowBrush, links1[i].X, links1[i].Y, links1[i].Width, links1[i].Height);
             }
 
             for (int i = 0; i < links2.Count; i++)
             {
-                e.Graphics.TranslateTransform(links2[i].X, links2[i].Y);
-                e.Graphics.RotateTransform(angle2);
-                e.Graphics.DrawRectangle(bluePen, 0, 0, links2[i].Width, links2[i].Height);
-                e.Graphics.FillEllipse(blueBrush, 0, 0, links2[i].Width, links2[i].Height);
-                e.Graphics.ResetTransform();
+                e.Graphics.DrawEllipse(bluePen, links2[i].X, links2[i].Y, links2[i].Width, links2[i].Height);
+                e.Graphics.FillEllipse(blueBrush, links2[i].X, links2[i].Y, links2[i].Width, links2[i].Height);
             }
 
             e.Graphics.FillRectangle(whiteBrush, time);
 
-                for (int i = 0; i < dots.Count; i++)
+            for (int i = 0; i < dots.Count; i++)
+            {
+                if (dotsColour[i] == "yellow")
                 {
-                    if (dotsColour[i] == "yellow")
-                    {
-                        e.Graphics.FillEllipse(yellowBrush, dots[i]);
-                    }
-                    else if (dotsColour[i] == "white")
-                    {
-                        e.Graphics.FillEllipse(whiteBrush, dots[i]);
-                    }
-                    else if (dotsColour[i] == "blue")
-                    {
-                        e.Graphics.FillEllipse(blueBrush, dots[i]);
-                    }
-                    else if (dotsColour[i] == "green")
-                    {
-                        e.Graphics.FillEllipse(greenBrush, dots[i]);
-                    }
-                    else if (dotsColour[i] == "red")
-                    {
-                        e.Graphics.FillEllipse(redBrush, dots[i]);
-                    }
-                    else if (dotsColour[i] == "orange")
-                    {
-                        e.Graphics.FillEllipse(orangeBrush, dots[i]);
-                    }
-                    else if (dotsColour[i] == "purple")
-                    {
-                        e.Graphics.FillEllipse(purpleBrush, dots[i]);
-                    }
-                    else if (dotsColour[i] == "turquoise")
-                    {
-                        e.Graphics.FillEllipse(turquoiseBrush, dots[i]);
-                    }
+                    e.Graphics.FillEllipse(yellowBrush, dots[i]);
+                }
+                else if (dotsColour[i] == "white")
+                {
+                    e.Graphics.FillEllipse(whiteBrush, dots[i]);
+                }
+                else if (dotsColour[i] == "blue")
+                {
+                    e.Graphics.FillEllipse(blueBrush, dots[i]);
+                }
+                else if (dotsColour[i] == "green")
+                {
+                    e.Graphics.FillEllipse(greenBrush, dots[i]);
+                }
+                else if (dotsColour[i] == "red")
+                {
+                    e.Graphics.FillEllipse(redBrush, dots[i]);
+                }
+                else if (dotsColour[i] == "orange")
+                {
+                    e.Graphics.FillEllipse(orangeBrush, dots[i]);
+                }
+                else if (dotsColour[i] == "purple")
+                {
+                    e.Graphics.FillEllipse(purpleBrush, dots[i]);
+                }
+                else if (dotsColour[i] == "turquoise")
+                {
+                    e.Graphics.FillEllipse(turquoiseBrush, dots[i]);
                 }
             }
         }

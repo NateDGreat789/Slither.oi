@@ -67,11 +67,12 @@
             // 
             this.titlelabel.Font = new System.Drawing.Font("Sitka Small", 72F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.titlelabel.ForeColor = System.Drawing.Color.White;
-            this.titlelabel.Location = new System.Drawing.Point(182, 183);
+            this.titlelabel.Location = new System.Drawing.Point(12, 183);
             this.titlelabel.Name = "titlelabel";
-            this.titlelabel.Size = new System.Drawing.Size(638, 116);
+            this.titlelabel.Size = new System.Drawing.Size(976, 116);
             this.titlelabel.TabIndex = 3;
             this.titlelabel.Text = "SLITHER.OI";
+            this.titlelabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // subtitlelabel
             // 
