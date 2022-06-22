@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.gametimer = new System.Windows.Forms.Timer(this.components);
-            this.p2scorelabel = new System.Windows.Forms.Label();
             this.p1scorelabel = new System.Windows.Forms.Label();
+            this.p2scorelabel = new System.Windows.Forms.Label();
             this.titlelabel = new System.Windows.Forms.Label();
             this.subtitlelabel = new System.Windows.Forms.Label();
             this.control1label = new System.Windows.Forms.Label();
@@ -45,23 +45,25 @@
             this.gametimer.Interval = 20;
             this.gametimer.Tick += new System.EventHandler(this.gametimer_Tick);
             // 
-            // p2scorelabel
-            // 
-            this.p2scorelabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p2scorelabel.ForeColor = System.Drawing.Color.White;
-            this.p2scorelabel.Location = new System.Drawing.Point(12, 9);
-            this.p2scorelabel.Name = "p2scorelabel";
-            this.p2scorelabel.Size = new System.Drawing.Size(94, 48);
-            this.p2scorelabel.TabIndex = 1;
-            // 
             // p1scorelabel
             // 
             this.p1scorelabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.p1scorelabel.ForeColor = System.Drawing.Color.White;
-            this.p1scorelabel.Location = new System.Drawing.Point(930, 9);
+            this.p1scorelabel.Location = new System.Drawing.Point(12, 9);
             this.p1scorelabel.Name = "p1scorelabel";
-            this.p1scorelabel.Size = new System.Drawing.Size(76, 48);
-            this.p1scorelabel.TabIndex = 2;
+            this.p1scorelabel.Size = new System.Drawing.Size(94, 48);
+            this.p1scorelabel.TabIndex = 1;
+            this.p1scorelabel.Visible = false;
+            // 
+            // p2scorelabel
+            // 
+            this.p2scorelabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.p2scorelabel.ForeColor = System.Drawing.Color.White;
+            this.p2scorelabel.Location = new System.Drawing.Point(938, 9);
+            this.p2scorelabel.Name = "p2scorelabel";
+            this.p2scorelabel.Size = new System.Drawing.Size(68, 48);
+            this.p2scorelabel.TabIndex = 2;
+            this.p2scorelabel.Visible = false;
             // 
             // titlelabel
             // 
@@ -127,8 +129,8 @@
             this.Controls.Add(this.control1label);
             this.Controls.Add(this.subtitlelabel);
             this.Controls.Add(this.titlelabel);
-            this.Controls.Add(this.p1scorelabel);
             this.Controls.Add(this.p2scorelabel);
+            this.Controls.Add(this.p1scorelabel);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Form1";
@@ -144,8 +146,8 @@
         #endregion
 
         private System.Windows.Forms.Timer gametimer;
-        private System.Windows.Forms.Label p2scorelabel;
         private System.Windows.Forms.Label p1scorelabel;
+        private System.Windows.Forms.Label p2scorelabel;
         private System.Windows.Forms.Label titlelabel;
         private System.Windows.Forms.Label subtitlelabel;
         private System.Windows.Forms.Label control1label;

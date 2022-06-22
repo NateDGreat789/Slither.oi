@@ -101,8 +101,8 @@ namespace Slither.oi
             control1label.Visible = false;
             control2label.Visible = false;
 
-            p1scorelabel.Visible = true;
             p2scorelabel.Visible = true;
+            p1scorelabel.Visible = true;
 
             links1.Clear();
             links2.Clear();
@@ -302,23 +302,23 @@ namespace Slither.oi
             if (leftDown == true)
             {
                 moveable1 = true;
-                angle1 -= 6;
+                angle1 -= 5;
             }
             if (rightDown == true)
             {
                 moveable1 = true;
-                angle1 += 6;
+                angle1 += 5;
             }
 
             if (aDown == true)
             {
                 moveable2 = true;
-                angle2 -= 6;
+                angle2 -= 5;
             }
             if (dDown == true)
             {
                 moveable2 = true;
-                angle2 += 6;
+                angle2 += 5;
             }
 
             if (angle1 < 0)
@@ -385,9 +385,9 @@ namespace Slither.oi
                         eat.Play();
                         p1score++;
                         p1SUpC++;
-                        if (p1SUpC == 10)
+                        if (p1SUpC == 8)
                         {
-                            player1Size += 5;
+                            player1Size += 3;
                             p1SUpC = 0;
                         }
                         for (int j = 0; j < 5; j++)
@@ -406,9 +406,9 @@ namespace Slither.oi
                         eat.Play();
                         p2score++;
                         p2SUpC++;
-                        if (p2SUpC == 10)
+                        if (p2SUpC == 8)
                         {
-                            player2Size += 5;
+                            player2Size += 3;
                             p1SUpC = 0;
                         }
                         for (int j = 0; j < 5; j++)
@@ -421,48 +421,7 @@ namespace Slither.oi
                     }
                 }
             }
-
-            //check if players are out of bounds
-            if (links1.Count > 0)
-            {
-                if (links1[0].X < 0)
-                {
-                    links1[0] = new Rectangle(0, links1[0].Y, 30, 30);
-                }
-                if (links1[0].X > 1000)
-                {
-                    links1[0] = new Rectangle(1000, links1[0].Y, 30, 30);
-                }
-                if (links1[0].Y < 0)
-                {
-                    links1[0] = new Rectangle(links2[0].X, 0, 30, 30);
-                }
-                if (links1[0].Y > 700)
-                {
-                    links1[0] = new Rectangle(links1[0].X, 700, 30, 30);
-                }
-            }
-
-            if (links2.Count > 0)
-            {
-                if (links2[0].X < 0)
-                {
-                    links2[0] = new Rectangle(0, links2[0].Y, 30, 30);
-                }
-                if (links2[0].X > 1000)
-                {
-                    links2[0] = new Rectangle(1000, links2[0].Y, 30, 30);
-                }
-                if (links2[0].Y < 0)
-                {
-                    links2[0] = new Rectangle(links2[0].X, 0, 30, 30);
-                }
-                if (links2[0].Y > 700)
-                {
-                    links2[0] = new Rectangle(links2[0].X, 700, 30, 30);
-                }
-            }
-
+            
             //check if players intersect
             for (int i = 0; i < links2.Count; i++)
             {
@@ -477,9 +436,9 @@ namespace Slither.oi
                         {
                             links2.Add(new Rectangle(links2[0].X, links2[0].Y, player2Size, player2Size));
                             p2SUpC++;
-                            if (p2SUpC == 10)
+                            if (p2SUpC == 8)
                             {
-                                player2Size += 5;
+                                player2Size += 3;
                                 p2SUpC = 0;
                             }
                         }
@@ -499,19 +458,13 @@ namespace Slither.oi
                         boom.Play();
                         p2dc++;
                         moveable2 = false;
-                        p1SUpC++;
-                        if (p1SUpC == 10)
-                        {
-                            player1Size += 5;
-                            p1SUpC = 0;
-                        }
                         for (int j = 0; j < links2.Count; j++)
                         {
                             links1.Add(new Rectangle(links1[0].X, links1[0].Y, player1Size, player1Size));
                             p1SUpC++;
-                            if (p1SUpC == 10)
+                            if (p1SUpC == 8)
                             {
-                                player1Size += 5;
+                                player1Size += 3;
                                 p1SUpC = 0;
                             }
                         }
@@ -535,8 +488,8 @@ namespace Slither.oi
                 player1Size = 25;
                 deathCounter1 = 0;
                 angle1 = 0;
-                p1x = 780;
-                p1y = 580;
+                p1x = rnd.Next(40, 960);
+                p1y = rnd.Next(40, 660);
                 for (int i = 0; i < 10; i++)
                 {
                     links1.Add(new Rectangle(780, 580, player1Size, player1Size));
@@ -555,8 +508,8 @@ namespace Slither.oi
                 player2Size = 25;
                 deathCounter2 = 0;
                 angle2 = 0;
-                p2x = 180;
-                p2y = 580;
+                p2x = rnd.Next(40, 960);
+                p2y = rnd.Next(40, 660);
                 for (int i = 0; i < 10; i++)
                 {
                     links2.Add(new Rectangle(780, 580, player2Size, player2Size));
@@ -569,14 +522,14 @@ namespace Slither.oi
             {
                 p1score = (links1.Count - 10) / 5;
             }
-            p1scorelabel.Text = $"{p1score}";
+            p2scorelabel.Text = $"{p1score}";
 
             p2score = 0;
             if (links2.Count > 0)
             {
                 p2score = (links2.Count - 10) / 5;
             }
-            p2scorelabel.Text = $"{p2score}";
+            p1scorelabel.Text = $"{p2score}";
 
             //add dots
             if (gamestate == "running")
@@ -627,11 +580,11 @@ namespace Slither.oi
                 win.Play();
                 if (p1score > p2score)
                 {
-                    titlelabel.Text = "PLAYER 1 WINS!";
+                    titlelabel.Text = "PLAYER 2 WINS!";
                 }
                 else if (p2score > p1score)
                 {
-                    titlelabel.Text = "PLAYER 2 WINS!";
+                    titlelabel.Text = "PLAYER 1 WINS!";
                 }
                 else
                 {
@@ -642,13 +595,20 @@ namespace Slither.oi
                 subtitlelabel.Visible = true;
                 subtitle2label.Visible = true;
 
-                control1label.Text = $"Player 1 score: {p1score}\nKills: {p2dc}";
-                control2label.Text = $"Player 2 score: {p2score}\nKills: {p1dc}";
+                control1label.Text = $"Player 1 score: {p2score}\nKills: {p2dc}";
+                control2label.Text = $"Player 2 score: {p1score}\nKills: {p1dc}";
                 control1label.Visible = true;
                 control2label.Visible = true;
 
-                p1scorelabel.Visible = false;
                 p2scorelabel.Visible = false;
+                p1scorelabel.Visible = false;
+
+                player1Size = 0;
+                player2Size = 0;
+
+
+                p1score = 0;
+                p2score = 0;
 
                 links1.Clear();
                 links2.Clear();
@@ -663,8 +623,6 @@ namespace Slither.oi
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            p1scorelabel.Text = $"{dots.Count}";
-
             for (int i = 0; i < links1.Count; i++)
             {
                 e.Graphics.DrawEllipse(yellowPen, links1[i].X, links1[i].Y, links1[i].Width, links1[i].Height);
